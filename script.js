@@ -289,6 +289,51 @@ places.forEach((place) => {
 });
 
 // =============================================
+// Polilíneas: ruta por día
+// =============================================
+const ROUTE_COLORS = {
+  1: "#3b82f6", // azul — Malasaña/Chueca
+  2: "#10b981", // verde esmeralda — Gran Vía/Sol/Plaza Mayor
+  3: "#8b5cf6", // violeta — La Latina/Lavapiés/Madrid Río
+};
+
+const routePolylines = new Map();
+
+[1, 2, 3].forEach((dayNum) => {
+  const routePoints = places
+    .filter((p) => p.day === dayNum && p.category !== "Alojamiento")
+    .sort((a, b) => a.order - b.order)
+    .map((p) => p.coords);
+
+  if (routePoints.length < 2) return;
+
+  const polyline = L.polyline(routePoints, {
+    color: ROUTE_COLORS[dayNum],
+    weight: 4,
+    opacity: 0.75,
+    dashArray: "8, 8",
+    lineCap: "round",
+    lineJoin: "round",
+  }).addTo(map);
+
+  routePolylines.set(dayNum, polyline);
+});
+
+function updatePolylines() {
+  // Solo mostrar polilíneas cuando el filtro de categoría es "Todos" (el orden requiere todas las paradas)
+  const showByCategory = state.filter === "all";
+  routePolylines.forEach((polyline, day) => {
+    const showByDay = state.day === "all" || state.day === String(day);
+    const shouldShow = showByCategory && showByDay;
+    if (shouldShow) {
+      if (!map.hasLayer(polyline)) polyline.addTo(map);
+    } else {
+      if (map.hasLayer(polyline)) map.removeLayer(polyline);
+    }
+  });
+}
+
+// =============================================
 // Render del sidebar
 // =============================================
 const placesList = document.getElementById("placesList");
@@ -342,6 +387,9 @@ function renderPlacesList() {
           placesList.appendChild(li);
         });
     });
+
+  // Mostrar/ocultar polilíneas según filtros
+  updatePolylines();
 
   // Ajustar vista a los marcadores filtrados
   fitToFiltered(filtered);
