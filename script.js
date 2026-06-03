@@ -151,6 +151,64 @@ const places = [
     coords: [40.41441, -3.72225],
     description: "Para terminar la tarde en Madrid Río: vistas espectaculares al Palacio Real y la Catedral de la Almudena al atardecer.",
   },
+
+  // ===== Día 1 — Alojamiento =====
+  {
+    id: 17,
+    day: 1,
+    order: 7,
+    name: "Bastardo Hostel",
+    category: "Alojamiento",
+    coords: [40.42562, -3.69825],
+    description: "Hostel boutique en Malasaña (Calle de San Mateo 3). Calificación 4.2 ★. Buena base para los recorridos del día 1.",
+  },
+
+  // ===== Otros lugares recomendados (lista MADRID) =====
+  {
+    id: 18,
+    day: "otros",
+    order: 1,
+    name: "Pacifico Smash Burger",
+    category: "Restaurantes",
+    coords: [40.40400, -3.67780],
+    description: "Hamburguesa estilo smash en la zona de Pacífico. €10-20 · 4.1 ★ (797).",
+  },
+  {
+    id: 19,
+    day: "otros",
+    order: 2,
+    name: "Los 33 Restaurante",
+    category: "Restaurantes",
+    coords: [40.42550, -3.68550],
+    description: "Parrilla argentina en barrio Salamanca. €30-80 · 4.2 ★ (2089).",
+  },
+  {
+    id: 20,
+    day: "otros",
+    order: 3,
+    name: "Zíngara · Restaurante Fusión Madrid",
+    category: "Restaurantes",
+    coords: [40.42250, -3.68450],
+    description: "Restaurante de fusión con ambiente nocturno. €30-40 · 4.5 ★ (622).",
+  },
+  {
+    id: 21,
+    day: "otros",
+    order: 4,
+    name: "Casa Canito",
+    category: "Restaurantes",
+    coords: [40.42180, -3.68080],
+    description: "Bar de tapas tradicional en Goya. €20-30 · 4.4 ★ (1966).",
+  },
+  {
+    id: 22,
+    day: "otros",
+    order: 5,
+    name: "LE CLAN",
+    category: "Restaurantes",
+    coords: [40.42530, -3.68900],
+    description: "Parrilla cerca de Serrano. €10-20 · 4.6 ★ (119).",
+  },
 ];
 
 // =============================================
@@ -189,9 +247,12 @@ function buildGoogleMapsUrl(place) {
 
 function buildPopupHtml(place) {
   const mapsUrl = buildGoogleMapsUrl(place);
+  const dayLabel = place.day === "otros"
+    ? `Otros lugares · #${place.order}`
+    : `Día ${place.day} · Parada ${place.order}`;
   return `
     <div class="popup">
-      <div class="popup__day">Día ${place.day} · Parada ${place.order}</div>
+      <div class="popup__day">${dayLabel}</div>
       <div class="popup__title">${place.name}</div>
       <div class="popup__desc">${place.description}</div>
       <a class="popup__btn" href="${mapsUrl}" target="_blank" rel="noopener noreferrer">
@@ -236,7 +297,7 @@ function renderPlacesList() {
   placesList.innerHTML = "";
   const filtered = places.filter((p) => {
     const matchFilter = state.filter === "all" || p.category === state.filter;
-    const matchDay = state.day === "all" || p.day === Number(state.day);
+    const matchDay = state.day === "all" || String(p.day) === state.day;
     return matchFilter && matchDay;
   });
 
@@ -251,7 +312,8 @@ function renderPlacesList() {
     .sort()
     .forEach((day) => {
       const dayHeader = document.createElement("li");
-      dayHeader.innerHTML = `<div style="padding:0.75rem 1.25rem 0.4rem;font-size:0.7rem;font-weight:700;color:var(--color-primary);text-transform:uppercase;letter-spacing:0.05em;">Día ${day}</div>`;
+      const headerLabel = day === "otros" ? "Otros lugares" : `Día ${day}`;
+      dayHeader.innerHTML = `<div style="padding:0.75rem 1.25rem 0.4rem;font-size:0.7rem;font-weight:700;color:var(--color-primary);text-transform:uppercase;letter-spacing:0.05em;">${headerLabel}</div>`;
       placesList.appendChild(dayHeader);
 
       byDay[day]

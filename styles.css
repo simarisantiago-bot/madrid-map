@@ -190,6 +190,7 @@ body {
 .tag.Plazas { background: var(--color-plazas); }
 .tag.Compras { background: var(--color-compras); }
 .tag.Parques { background: var(--color-parques); }
+.tag.Alojamiento { background: var(--color-accent); color: #1a1a1a; }
 
 .sidebar__footer {
   padding: 0.75rem 1.25rem;
@@ -231,6 +232,7 @@ body {
 .custom-marker.Plazas { background: var(--color-plazas); }
 .custom-marker.Compras { background: var(--color-compras); }
 .custom-marker.Parques { background: var(--color-parques); }
+.custom-marker.Alojamiento { background: var(--color-accent); color: #1a1a1a; }
 
 /* ===== Popup ===== */
 .leaflet-popup-content-wrapper {
