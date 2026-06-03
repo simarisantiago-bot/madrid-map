@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Madrid · Mapa de Viaje</title>
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <aside class="sidebar" id="sidebar">
+    <header class="sidebar__header">
+      <h1>Madrid · 3 Días</h1>
+      <p class="sidebar__subtitle">Tu ruta optimizada por barrios</p>
+    </header>
+
+    <div class="sidebar__filters" id="filters">
+      <button class="filter-btn is-active" data-filter="all">Todos</button>
+      <button class="filter-btn" data-filter="Cultura">Cultura</button>
+      <button class="filter-btn" data-filter="Restaurantes">Restaurantes</button>
+      <button class="filter-btn" data-filter="Plazas y Calles">Plazas y Calles</button>
+      <button class="filter-btn" data-filter="Compras">Compras</button>
+      <button class="filter-btn" data-filter="Parques">Parques</button>
+    </div>
+
+    <div class="sidebar__days" id="dayTabs">
+      <button class="day-btn is-active" data-day="all">Todos los días</button>
+      <button class="day-btn" data-day="1">Día 1</button>
+      <button class="day-btn" data-day="2">Día 2</button>
+      <button class="day-btn" data-day="3">Día 3</button>
+    </div>
+
+    <ul class="places-list" id="placesList"></ul>
+
+    <footer class="sidebar__footer">
+      <small>Mapa por OpenStreetMap · Leaflet.js</small>
+    </footer>
+  </aside>
+
+  <main id="map" class="map"></main>
+
+  <button class="sidebar-toggle" id="sidebarToggle" aria-label="Mostrar/ocultar barra lateral">
+    <span></span><span></span><span></span>
+  </button>
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+  <script src="script.js"></script>
+</body>
+</html>
