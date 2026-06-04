@@ -418,6 +418,73 @@ places.forEach((place) => {
 });
 
 // =============================================
+// Ruta eficiente por día (nearest-neighbor)
+// =============================================
+const ROUTE_COLORS = {
+  1: "#3b82f6", // azul — Malasaña/Chueca
+  2: "#10b981", // verde esmeralda — Centro
+  3: "#8b5cf6", // violeta — La Latina/Madrid Río
+};
+
+let activeRoute = null;
+
+function distSq(a, b) {
+  const dy = a[0] - b[0];
+  const dx = a[1] - b[1];
+  return dy * dy + dx * dx;
+}
+
+function nearestNeighborOrder(items) {
+  if (items.length < 2) return items.slice();
+  // Arrancar en la parada con el "order" más bajo (punto inicial pensado por el viajero)
+  const sorted = items.slice().sort((a, b) => a.order - b.order);
+  const route = [sorted[0]];
+  const remaining = sorted.slice(1);
+  while (remaining.length > 0) {
+    const last = route[route.length - 1];
+    let bestIdx = 0;
+    let bestD = distSq(last.coords, remaining[0].coords);
+    for (let i = 1; i < remaining.length; i++) {
+      const d = distSq(last.coords, remaining[i].coords);
+      if (d < bestD) {
+        bestD = d;
+        bestIdx = i;
+      }
+    }
+    route.push(remaining[bestIdx]);
+    remaining.splice(bestIdx, 1);
+  }
+  return route;
+}
+
+function updateActiveRoute() {
+  if (activeRoute) {
+    map.removeLayer(activeRoute);
+    activeRoute = null;
+  }
+  const dayNum = Number(state.day);
+  if (!ROUTE_COLORS[dayNum]) return; // solo días 1, 2, 3
+  if (state.filter !== "all" || state.query.trim() !== "") return; // sin otros filtros activos
+
+  const dayPlaces = places.filter(
+    (p) => p.day === dayNum && p.category !== "Alojamiento"
+  );
+  if (dayPlaces.length < 2) return;
+
+  const ordered = nearestNeighborOrder(dayPlaces);
+  const coords = ordered.map((p) => p.coords);
+
+  activeRoute = L.polyline(coords, {
+    color: ROUTE_COLORS[dayNum],
+    weight: 4,
+    opacity: 0.8,
+    dashArray: "8, 8",
+    lineCap: "round",
+    lineJoin: "round",
+  }).addTo(map);
+}
+
+// =============================================
 // Render del sidebar
 // =============================================
 const placesList = document.getElementById("placesList");
@@ -487,6 +554,9 @@ function renderPlacesList() {
           placesList.appendChild(li);
         });
     });
+
+  // Dibujar/borrar polilínea de ruta eficiente del día
+  updateActiveRoute();
 
   // Ajustar vista a los marcadores filtrados
   fitToFiltered(filtered);
