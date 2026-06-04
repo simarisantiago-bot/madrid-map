@@ -272,12 +272,13 @@ body {
   letter-spacing: 0.03em;
 }
 
-.tag.Cultura { background: var(--color-cultura); }
-.tag.Restaurantes { background: var(--color-restaurantes); }
-.tag.Plazas { background: var(--color-plazas); }
-.tag.Compras { background: var(--color-compras); }
-.tag.Parques { background: var(--color-parques); }
-.tag.Alojamiento { background: var(--color-accent); color: #1a1a1a; }
+/* Esquema simplificado: naranja para comida, verde para todo lo demás */
+.tag.Restaurantes { background: var(--color-restaurantes); color: #fff; }
+.tag.Cultura,
+.tag.PlazasyCalles,
+.tag.Compras,
+.tag.Parques,
+.tag.Alojamiento { background: var(--color-cultura); color: #fff; }
 
 .sidebar__footer {
   padding: 0.75rem 1.25rem;
@@ -314,12 +315,12 @@ body {
   transform: rotate(45deg);
 }
 
-.custom-marker.Cultura { background: var(--color-cultura); }
-.custom-marker.Restaurantes { background: var(--color-restaurantes); }
-.custom-marker.Plazas { background: var(--color-plazas); }
-.custom-marker.Compras { background: var(--color-compras); }
-.custom-marker.Parques { background: var(--color-parques); }
-.custom-marker.Alojamiento { background: var(--color-accent); color: #1a1a1a; }
+.custom-marker.Restaurantes { background: var(--color-restaurantes); color: #fff; }
+.custom-marker.Cultura,
+.custom-marker.PlazasyCalles,
+.custom-marker.Compras,
+.custom-marker.Parques,
+.custom-marker.Alojamiento { background: var(--color-cultura); color: #fff; }
 
 /* ===== Popup ===== */
 .leaflet-popup-content-wrapper {
