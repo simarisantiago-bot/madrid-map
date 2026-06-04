@@ -426,7 +426,10 @@ function renderPlacesList() {
   placesList.innerHTML = "";
   const q = state.query.trim().toLowerCase();
   const filtered = places.filter((p) => {
-    const matchFilter = state.filter === "all" || p.category === state.filter;
+    const matchFilter =
+      state.filter === "all" ||
+      (state.filter === "Lugares" && p.category !== "Restaurantes") ||
+      p.category === state.filter;
     const matchDay = state.day === "all" || String(p.day) === state.day;
     const matchQuery = q === "" || p.name.toLowerCase().includes(q);
     return matchFilter && matchDay && matchQuery;
