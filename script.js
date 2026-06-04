@@ -462,7 +462,7 @@ function renderPlacesList() {
       placesList.appendChild(dayHeader);
 
       byDay[day]
-        .sort((a, b) => a.order - b.order)
+        .sort((a, b) => a.name.localeCompare(b.name, "es", { sensitivity: "base" }))
         .forEach((place) => {
           const li = document.createElement("li");
           li.className = "place-item";
