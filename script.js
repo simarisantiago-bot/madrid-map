@@ -386,9 +386,10 @@ function toggleVisited(id) {
 }
 
 function buildGoogleMapsUrl(place) {
-  const [lat, lon] = place.coords;
-  const query = encodeURIComponent(place.name);
-  return `https://www.google.com/maps/search/?api=1&query=${lat},${lon}&query_place_id=${query}`;
+  // Pasamos el nombre + "Madrid" como query para que Google muestre el lugar por su nombre.
+  // El sufijo "Madrid" desambigua nombres genéricos (ej. "Pacifico", "Bar La Ideal").
+  const query = encodeURIComponent(`${place.name} Madrid`);
+  return `https://www.google.com/maps/search/?api=1&query=${query}`;
 }
 
 function buildPopupHtml(place) {
