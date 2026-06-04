@@ -328,37 +328,65 @@ body {
   height: 100vh;
 }
 
-/* ===== Custom Leaflet markers ===== */
-.custom-marker {
-  background: var(--color-primary);
-  width: 32px;
-  height: 32px;
-  border-radius: 50% 50% 50% 0;
-  transform: rotate(-45deg);
-  border: 3px solid #fff;
-  box-shadow: var(--shadow-md);
+/* ===== Custom Leaflet markers (círculo plano + icono + badge de orden) ===== */
+.marker {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--color-cultura);
+  border: 2.5px solid #fff;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.22);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
+  position: relative;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.marker:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+
+.marker__icon {
+  width: 18px;
+  height: 18px;
+}
+
+.marker__badge {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  background: #fff;
+  color: #1a1a1a;
+  font-size: 0.62rem;
   font-weight: 700;
-  font-size: 0.85rem;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  line-height: 1;
 }
 
-.custom-marker span {
-  transform: rotate(45deg);
+.marker--Restaurantes { background: var(--color-restaurantes); }
+.marker--Cultura,
+.marker--PlazasyCalles,
+.marker--Compras,
+.marker--Parques,
+.marker--Alojamiento { background: var(--color-cultura); }
+
+.marker.is-visited {
+  opacity: 0.5;
+  filter: grayscale(0.5);
 }
 
-.custom-marker.Restaurantes { background: var(--color-restaurantes); color: #fff; }
-.custom-marker.Cultura,
-.custom-marker.PlazasyCalles,
-.custom-marker.Compras,
-.custom-marker.Parques,
-.custom-marker.Alojamiento { background: var(--color-cultura); color: #fff; }
-
-.custom-marker.is-visited {
-  opacity: 0.45;
-  filter: grayscale(0.4);
+.marker.is-visited .marker__badge {
+  display: none;
 }
 
 /* ===== Popup ===== */

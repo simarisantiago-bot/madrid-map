@@ -415,19 +415,38 @@ function buildPopupHtml(place) {
   `;
 }
 
+const CATEGORY_SVG = {
+  Restaurantes:
+    '<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3v7"/>',
+  Cultura:
+    '<line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/>',
+  PlazasyCalles:
+    '<polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/>',
+  Compras:
+    '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>',
+  Alojamiento:
+    '<path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/>',
+  Parques:
+    '<path d="M12 22V8"/><path d="M5 12V8a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v4"/><path d="M5 12a7 7 0 0 0 14 0"/>',
+};
+const CHECK_SVG = '<polyline points="20 6 9 17 4 12"/>';
+
 function createCustomIcon(place) {
   const safeCategory = place.category.replace(/\s+/g, "");
   const visited = state.visited.has(place.id);
   const visitedClass = visited ? " is-visited" : "";
-  const inner = visited
-    ? '<svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>'
-    : `<span>${place.order}</span>`;
+  const iconSvg = visited ? CHECK_SVG : (CATEGORY_SVG[safeCategory] || CATEGORY_SVG.PlazasyCalles);
   return L.divIcon({
     className: "",
-    html: `<div class="custom-marker ${safeCategory}${visitedClass}">${inner}</div>`,
-    iconSize: [32, 32],
-    iconAnchor: [16, 32],
-    popupAnchor: [0, -28],
+    html: `
+      <div class="marker marker--${safeCategory}${visitedClass}">
+        <svg class="marker__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${iconSvg}</svg>
+        <span class="marker__badge">${place.order}</span>
+      </div>
+    `,
+    iconSize: [38, 38],
+    iconAnchor: [19, 19],
+    popupAnchor: [0, -22],
   });
 }
 
