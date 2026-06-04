@@ -245,6 +245,7 @@ L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r
 const state = {
   filter: "all",
   day: "all",
+  query: "",
   markers: new Map(), // id -> { marker, place }
 };
 
@@ -304,11 +305,24 @@ const placesList = document.getElementById("placesList");
 
 function renderPlacesList() {
   placesList.innerHTML = "";
+  const q = state.query.trim().toLowerCase();
   const filtered = places.filter((p) => {
     const matchFilter = state.filter === "all" || p.category === state.filter;
     const matchDay = state.day === "all" || String(p.day) === state.day;
-    return matchFilter && matchDay;
+    const matchQuery = q === "" || p.name.toLowerCase().includes(q);
+    return matchFilter && matchDay && matchQuery;
   });
+
+  if (filtered.length === 0) {
+    const li = document.createElement("li");
+    li.className = "places-list__empty";
+    li.textContent = q
+      ? `Sin resultados para "${state.query}"`
+      : "Sin lugares para los filtros actuales";
+    placesList.appendChild(li);
+    fitToFiltered(filtered);
+    return;
+  }
 
   // Agrupar por día
   const byDay = {};
@@ -411,6 +425,27 @@ document.getElementById("dayTabs").addEventListener("click", (e) => {
   btn.classList.add("is-active");
   state.day = btn.dataset.day;
   renderPlacesList();
+});
+
+// =============================================
+// Buscador por nombre
+// =============================================
+const searchInput = document.getElementById("searchInput");
+const searchClear = document.getElementById("searchClear");
+const searchWrap = document.querySelector(".sidebar__search");
+
+searchInput.addEventListener("input", () => {
+  state.query = searchInput.value;
+  searchWrap.classList.toggle("has-query", state.query.length > 0);
+  renderPlacesList();
+});
+
+searchClear.addEventListener("click", () => {
+  searchInput.value = "";
+  state.query = "";
+  searchWrap.classList.remove("has-query");
+  renderPlacesList();
+  searchInput.focus();
 });
 
 // =============================================

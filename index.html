@@ -21,6 +21,15 @@
       <p class="sidebar__subtitle">Tu ruta optimizada por barrios</p>
     </header>
 
+    <div class="sidebar__search">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input type="search" id="searchInput" placeholder="Buscar lugar…" autocomplete="off" />
+      <button type="button" class="search-clear" id="searchClear" aria-label="Limpiar búsqueda">✕</button>
+    </div>
+
     <div class="sidebar__filters" id="filters">
       <button class="filter-btn is-active" data-filter="all">Todos</button>
       <button class="filter-btn" data-filter="Cultura">Cultura</button>
