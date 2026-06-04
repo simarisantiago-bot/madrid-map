@@ -23,8 +23,8 @@ const places = [
   },
   {
     id: 3,
-    day: 1,
-    order: 3,
+    day: 2,
+    order: 6,
     name: "Calle de Fuencarral",
     category: "Compras",
     coords: [40.43346041317356, -3.704367924006934],
@@ -33,7 +33,7 @@ const places = [
   {
     id: 4,
     day: 1,
-    order: 4,
+    order: 3,
     name: "Nikita Nipone",
     category: "Compras",
     coords: [40.42509698332999, -3.702668962064208],
@@ -42,7 +42,7 @@ const places = [
   {
     id: 5,
     day: 1,
-    order: 5,
+    order: 4,
     name: "Mercado de San Antón",
     category: "Restaurantes",
     coords: [40.42216566120614, -3.697736579826599],
@@ -51,7 +51,7 @@ const places = [
   {
     id: 6,
     day: 1,
-    order: 6,
+    order: 5,
     name: "Bocadillos Oink Infantas",
     category: "Restaurantes",
     coords: [40.4208927171649, -3.6997648663514022],
@@ -135,8 +135,8 @@ const places = [
   },
   {
     id: 15,
-    day: 3,
-    order: 4,
+    day: "otros",
+    order: 18,
     name: "Lavapiés",
     category: "Cultura",
     coords: [40.40903, -3.70094],
@@ -145,7 +145,7 @@ const places = [
   {
     id: 16,
     day: 3,
-    order: 5,
+    order: 4,
     name: "Puente de Segovia",
     category: "Cultura",
     coords: [40.414235367364405, -3.722825586629771],
@@ -156,7 +156,7 @@ const places = [
   {
     id: 17,
     day: 1,
-    order: 7,
+    order: 6,
     name: "Bastardo Hostel",
     category: "Alojamiento",
     coords: [40.42537588976469, -3.700123777952472],
@@ -165,7 +165,7 @@ const places = [
   {
     id: 23,
     day: 1,
-    order: 8,
+    order: 7,
     name: "TOY PANDA",
     category: "Compras",
     coords: [40.425055125528445, -3.702623364510198],
@@ -321,8 +321,8 @@ const places = [
   },
   {
     id: 35,
-    day: "otros",
-    order: 17,
+    day: 2,
+    order: 7,
     name: "Plaza de Olavide",
     category: "Plazas y Calles",
     coords: [40.43322834710105, -3.7012149933128438],
@@ -331,7 +331,7 @@ const places = [
   {
     id: 36,
     day: "otros",
-    order: 18,
+    order: 17,
     name: "Museo del Prado",
     category: "Cultura",
     coords: [40.41387574051428, -3.692111006821329],
