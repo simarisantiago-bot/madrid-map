@@ -381,6 +381,8 @@ function buildPopupHtml(place) {
     : `Día ${place.day} · Parada ${place.order}`;
   return `
     <div class="popup">
+      <div class="popup__photo" id="popup-photo-${place.id}" data-loading="1"></div>
+      <div class="popup__body">
       <div class="popup__day">${dayLabel}</div>
       <div class="popup__title">${place.name}</div>
       <div class="popup__desc">${place.description}</div>
@@ -390,6 +392,7 @@ function buildPopupHtml(place) {
         </svg>
         Abrir en Google Maps · Cómo llegar
       </a>
+      </div>
     </div>
   `;
 }
@@ -414,8 +417,61 @@ places.forEach((place) => {
     .bindPopup(buildPopupHtml(place), { closeButton: true, maxWidth: 280 });
 
   marker.on("click", () => highlightPlace(place.id));
+  marker.on("popupopen", () => loadPhotoForPlace(place));
   state.markers.set(place.id, { marker, place });
 });
+
+// =============================================
+// Fotos lazy desde Wikipedia (es.wikipedia.org)
+// =============================================
+const photoCache = new Map(); // name -> url | null
+const WIKI_TITLE_OVERRIDES = {
+  "Plaza Mayor": "Plaza Mayor de Madrid",
+  "Plaza del Dos de Mayo": "Plaza del Dos de Mayo (Madrid)",
+  "Puerta del Sol": "Puerta del Sol (Madrid)",
+  "Calle de Fuencarral": "Calle de Fuencarral",
+  "Mercado de San Antón": "Mercado de San Antón",
+  "Plaza de San Ildefonso": "Plaza de San Ildefonso (Madrid)",
+  "Plaza de Olavide": "Plaza de Olavide",
+  "Puente de Segovia": "Puente de Segovia",
+  "Chocolatería San Ginés": "Chocolatería San Ginés",
+  "Museo del Prado": "Museo del Prado",
+  "Lavapiés": "Lavapiés",
+  "Espacio Fundación Telefónica": "Espacio Fundación Telefónica",
+};
+
+async function fetchWikiPhoto(name) {
+  if (photoCache.has(name)) return photoCache.get(name);
+  const title = WIKI_TITLE_OVERRIDES[name] || name;
+  const url = `https://es.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) {
+      photoCache.set(name, null);
+      return null;
+    }
+    const data = await res.json();
+    const photo = data.thumbnail?.source || null;
+    photoCache.set(name, photo);
+    return photo;
+  } catch {
+    photoCache.set(name, null);
+    return null;
+  }
+}
+
+async function loadPhotoForPlace(place) {
+  const el = document.getElementById(`popup-photo-${place.id}`);
+  if (!el || el.dataset.loading !== "1") return;
+  el.dataset.loading = "0";
+  const photo = await fetchWikiPhoto(place.name);
+  if (!photo) {
+    el.style.display = "none";
+    return;
+  }
+  el.style.backgroundImage = `url("${photo}")`;
+  el.classList.add("is-loaded");
+}
 
 // =============================================
 // Ruta eficiente por día (nearest-neighbor)
