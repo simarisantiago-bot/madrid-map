@@ -361,12 +361,29 @@ L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r
 // =============================================
 // Estado y helpers
 // =============================================
+const VISITED_KEY = "madrid-visited";
 const state = {
   filter: "all",
   day: "all",
   query: "",
   markers: new Map(), // id -> { marker, place }
+  visited: new Set(JSON.parse(localStorage.getItem(VISITED_KEY) || "[]")),
 };
+
+function saveVisited() {
+  localStorage.setItem(VISITED_KEY, JSON.stringify([...state.visited]));
+}
+
+function toggleVisited(id) {
+  if (state.visited.has(id)) state.visited.delete(id);
+  else state.visited.add(id);
+  saveVisited();
+  // Refrescar icono del marker
+  const entry = state.markers.get(id);
+  if (entry) entry.marker.setIcon(createCustomIcon(entry.place));
+  // Re-render sidebar para actualizar contadores y estilos
+  renderPlacesList();
+}
 
 function buildGoogleMapsUrl(place) {
   const [lat, lon] = place.coords;
@@ -399,9 +416,14 @@ function buildPopupHtml(place) {
 
 function createCustomIcon(place) {
   const safeCategory = place.category.replace(/\s+/g, "");
+  const visited = state.visited.has(place.id);
+  const visitedClass = visited ? " is-visited" : "";
+  const inner = visited
+    ? '<svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>'
+    : `<span>${place.order}</span>`;
   return L.divIcon({
     className: "",
-    html: `<div class="custom-marker ${safeCategory}"><span>${place.order}</span></div>`,
+    html: `<div class="custom-marker ${safeCategory}${visitedClass}">${inner}</div>`,
     iconSize: [32, 32],
     iconAnchor: [16, 32],
     popupAnchor: [0, -28],
@@ -581,7 +603,9 @@ function renderPlacesList() {
     .forEach((day) => {
       const dayHeader = document.createElement("li");
       const headerLabel = day === "otros" ? "Otros lugares" : `Día ${day}`;
-      dayHeader.innerHTML = `<div style="padding:0.75rem 1.25rem 0.4rem;font-size:0.7rem;font-weight:700;color:var(--color-primary);text-transform:uppercase;letter-spacing:0.05em;">${headerLabel}</div>`;
+      const visitedInDay = byDay[day].filter((p) => state.visited.has(p.id)).length;
+      const counter = `<span class="day-count">${visitedInDay}/${byDay[day].length}</span>`;
+      dayHeader.innerHTML = `<div style="padding:0.75rem 1.25rem 0.4rem;font-size:0.7rem;font-weight:700;color:var(--color-primary);text-transform:uppercase;letter-spacing:0.05em;display:flex;justify-content:space-between;align-items:center;">${headerLabel} ${counter}</div>`;
       placesList.appendChild(dayHeader);
 
       byDay[day]
@@ -589,9 +613,12 @@ function renderPlacesList() {
         .forEach((place) => {
           const li = document.createElement("li");
           li.className = "place-item";
+          if (state.visited.has(place.id)) li.classList.add("is-visited");
           li.dataset.id = place.id;
           const safeCategory = place.category.replace(/\s+/g, "");
+          const isChecked = state.visited.has(place.id) ? "checked" : "";
           li.innerHTML = `
+            <input type="checkbox" class="place-item__check" ${isChecked} aria-label="Marcar como visitado" />
             <div class="place-item__index">${place.order}</div>
             <div class="place-item__body">
               <div class="place-item__name">${place.name}</div>
@@ -600,6 +627,11 @@ function renderPlacesList() {
               </div>
             </div>
           `;
+          // Click en el checkbox: solo togglea visitado (no foca el lugar)
+          li.querySelector(".place-item__check").addEventListener("click", (e) => {
+            e.stopPropagation();
+            toggleVisited(place.id);
+          });
           li.addEventListener("click", () => {
             focusPlace(place.id);
             // En móvil, cerrar el sidebar tras seleccionar

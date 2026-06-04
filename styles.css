@@ -240,6 +240,40 @@ body {
   font-weight: 600;
 }
 
+.place-item__check {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  cursor: pointer;
+  accent-color: var(--color-cultura);
+}
+
+.place-item.is-visited .place-item__name {
+  text-decoration: line-through;
+  color: var(--color-muted);
+}
+
+.place-item.is-visited .place-item__index {
+  background: #9ca3af;
+}
+
+.place-item.is-visited .tag {
+  opacity: 0.6;
+}
+
+.day-count {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 0.1rem 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--color-muted);
+  letter-spacing: 0;
+  margin-right: 1.25rem;
+}
+
 .place-item__body {
   flex: 1;
   min-width: 0;
@@ -321,6 +355,11 @@ body {
 .custom-marker.Compras,
 .custom-marker.Parques,
 .custom-marker.Alojamiento { background: var(--color-cultura); color: #fff; }
+
+.custom-marker.is-visited {
+  opacity: 0.45;
+  filter: grayscale(0.4);
+}
 
 /* ===== Popup ===== */
 .leaflet-popup-content-wrapper {
