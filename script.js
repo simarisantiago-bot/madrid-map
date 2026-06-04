@@ -736,6 +736,103 @@ document.getElementById("sidebarToggle").addEventListener("click", () => {
 });
 
 // =============================================
+// Geolocalización ("Mi ubicación")
+// =============================================
+const locateBtn = document.getElementById("locateBtn");
+const locate = {
+  watchId: null,
+  dot: null,
+  ring: null,
+  hasFirstFix: false,
+};
+
+function stopLocate() {
+  if (locate.watchId !== null) {
+    navigator.geolocation.clearWatch(locate.watchId);
+    locate.watchId = null;
+  }
+  if (locate.dot) {
+    map.removeLayer(locate.dot);
+    locate.dot = null;
+  }
+  if (locate.ring) {
+    map.removeLayer(locate.ring);
+    locate.ring = null;
+  }
+  locate.hasFirstFix = false;
+  locateBtn.classList.remove("is-active", "is-loading");
+}
+
+function onLocationSuccess(pos) {
+  const { latitude, longitude, accuracy } = pos.coords;
+  const latlng = [latitude, longitude];
+  locateBtn.classList.remove("is-loading");
+  locateBtn.classList.add("is-active");
+
+  if (!locate.dot) {
+    locate.ring = L.circle(latlng, {
+      radius: accuracy,
+      color: "#3b82f6",
+      weight: 0,
+      fillColor: "#3b82f6",
+      fillOpacity: 0.22,
+      className: "user-location-ring",
+    }).addTo(map);
+    locate.dot = L.circleMarker(latlng, {
+      radius: 8,
+      color: "#fff",
+      weight: 2.5,
+      fillColor: "#3b82f6",
+      fillOpacity: 1,
+      className: "user-location-dot",
+    }).addTo(map);
+  } else {
+    locate.dot.setLatLng(latlng);
+    locate.ring.setLatLng(latlng);
+    locate.ring.setRadius(accuracy);
+  }
+
+  if (!locate.hasFirstFix) {
+    locate.hasFirstFix = true;
+    map.flyTo(latlng, 16, { duration: 0.8 });
+  }
+}
+
+function onLocationError(err) {
+  let msg = "No se pudo obtener tu ubicación.";
+  if (err.code === err.PERMISSION_DENIED) {
+    msg = "Permiso de ubicación denegado. Habilítalo desde la configuración del navegador.";
+  } else if (err.code === err.POSITION_UNAVAILABLE) {
+    msg = "Ubicación no disponible. Probá al aire libre.";
+  } else if (err.code === err.TIMEOUT) {
+    msg = "Tiempo de espera agotado buscando GPS.";
+  }
+  alert(msg);
+  stopLocate();
+}
+
+function startLocate() {
+  if (!navigator.geolocation) {
+    alert("Tu navegador no soporta geolocalización.");
+    return;
+  }
+  locateBtn.classList.add("is-loading");
+  locate.watchId = navigator.geolocation.watchPosition(
+    onLocationSuccess,
+    onLocationError,
+    { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 }
+  );
+}
+
+locateBtn.addEventListener("click", () => {
+  if (locate.watchId !== null) {
+    stopLocate();
+  } else {
+    startLocate();
+  }
+});
+
+// =============================================
 // Render inicial
 // =============================================
 renderPlacesList();
