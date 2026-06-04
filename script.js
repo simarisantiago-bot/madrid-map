@@ -162,6 +162,15 @@ const places = [
     coords: [40.42562, -3.69825],
     description: "Hostel boutique en Malasaña (Calle de San Mateo 3). Calificación 4.2 ★. Buena base para los recorridos del día 1.",
   },
+  {
+    id: 23,
+    day: 1,
+    order: 8,
+    name: "TOY PANDA",
+    category: "Compras",
+    coords: [40.42453, -3.70008],
+    description: "⚠️ Cerrado permanentemente. Lo dejamos marcado para recorrer la zona (Malasaña, calles aledañas a Pl. San Ildefonso).",
+  },
 
   // ===== Otros lugares recomendados (lista MADRID) =====
   {
